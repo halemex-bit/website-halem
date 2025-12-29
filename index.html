@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <meta name="description" content="halem | Premier Event Management System Architect. Specializing in Auto Booth Booking APIs, Real-time Exhibition Floorplans, and Expo Management in Malaysia.">
+    <meta name="keywords" content="event management, booth booking system, exhibition booking, auto booth api, malaysia booth, expo, event tech, real-time floorplan, absolut bazaar, vendor management system">
+    <meta name="author" content="Halem">
+    <meta name="robots" content="index, follow">
+    
+    <meta property="og:title" content="halem | Event. Tech & Booth Booking Systems">
+    <meta property="og:description" content="Architecting high-traffic exhibition systems. Real-time floorplans, auto-locking booth APIs, and seamless event management for Malaysia's top expos.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://halem.my/">
+    
+    <title>halem | EVENT. TECH</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Manrope:wght@300;400;600;800&family=Oswald:wght@500;700&display=swap" rel="stylesheet">
+
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        :root {
+            --bg-color: #050505; 
+            --card-bg: #121214; 
+            --text-primary: #ededed;
+            --text-secondary: #a1a1aa;
+            --accent: #FF3333;
+            --border: #27272a;
+            --code-bg: #000;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            cursor: crosshair;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            font-family: 'Manrope', sans-serif;
+            overflow: hidden; /* Prevent body scroll on desktop */
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* --- FIREWORKS CANVAS --- */
+        #fireworks-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 9999; 
+            pointer-events: none; 
+            mix-blend-mode: screen; 
+        }
+
+        /* --- HEADER --- */
+        header {
+            padding: 2rem 4vw;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            background: rgba(5,5,5,0.8);
+            backdrop-filter: blur(10px);
+            z-index: 10;
+        }
+
+        /* --- SHIMMERING TEXT EFFECT --- */
+        h1 {
+            font-family: 'Oswald', sans-serif;
+            font-size: 3rem;
+            line-height: 1;
+            text-transform: lowercase;
+            letter-spacing: -0.05em;
+            margin: 0;
+            
+            /* Shimmer Gradient Logic */
+            background: linear-gradient(
+                110deg, 
+                #555555 35%,   /* Darker Base */
+                #ffffff 50%,   /* Bright Shimmer */
+                #555555 65%    /* Darker Base */
+            );
+            background-size: 200% auto;
+            
+            /* Clip background to text */
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            
+            /* Animation */
+            animation: shimmer-wave 3s linear infinite;
+        }
+
+        @keyframes shimmer-wave {
+            to {
+                background-position: 200% center;
+            }
+        }
+
+        .header-meta {
+            text-align: right;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 5px;
+        }
+
+        .role-title {
+            font-size: 1.2rem;
+            font-family: 'Oswald', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-primary);
+        }
+
+        .stack-tag {
+            font-size: 0.75rem;
+            background: var(--card-bg);
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--accent);
+            border: 1px solid var(--border);
+            text-transform: uppercase;
+        }
+
+        /* --- CAROUSEL CONTAINER --- */
+        main {
+            flex: 1;
+            display: flex;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            align-items: center;
+            padding: 0 4vw;
+            gap: 2rem; 
+            scrollbar-width: none; 
+            -ms-overflow-style: none;
+            position: relative;
+            z-index: 5;
+        }
+        
+        main::-webkit-scrollbar { display: none; }
+
+        /* --- CARD DESIGN --- */
+        .project-slide {
+            min-width: 30vw; 
+            height: 65vh;
+            scroll-snap-align: center;
+            
+            background: rgba(18, 18, 20, 0.6);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            
+            display: flex;
+            flex-direction: column; 
+            
+            overflow: hidden;
+            position: relative;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .project-slide:hover {
+            border-color: #555;
+            transform: translateY(-5px);
+            background: rgba(18, 18, 20, 0.8);
+        }
+
+        .slide-tech {
+            flex: 1;
+            background: linear-gradient(180deg, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            padding: 2rem;
+        }
+
+        .mobile-frame {
+            width: 200px;
+            height: 400px;
+            background: #000;
+            border-radius: 20px;
+            border: 6px solid #2a2a2a;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+            transition: transform 0.5s ease;
+            transform: scale(0.9);
+        }
+
+        .project-slide:hover .mobile-frame {
+            transform: scale(1);
+        }
+
+        .mobile-frame iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: #fff;
+        }
+
+        .mini-code {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(0,0,0,0.9);
+            border: 1px solid #333;
+            padding: 10px;
+            border-radius: 8px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.6rem;
+            color: #a9b7c6;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.3s ease;
+        }
+
+        .project-slide:hover .mini-code {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .slide-info {
+            padding: 1.5rem 2rem;
+            border-top: 1px solid var(--border);
+            background: rgba(0,0,0,0.4);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .info-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .slide-info h2 {
+            font-size: 2rem;
+            font-family: 'Oswald', sans-serif;
+            text-transform: uppercase;
+            line-height: 1;
+            margin-bottom: 0.5rem;
+        }
+
+        .p-role {
+            font-size: 0.75rem;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-weight: bold;
+        }
+
+        .p-desc {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+            margin-bottom: 1.5rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .p-link {
+            text-decoration: none;
+            color: #fff;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            opacity: 0.7;
+            transition: 0.2s;
+        }
+        
+        .p-link:hover { opacity: 1; color: var(--accent); }
+
+        /* --- FOOTER --- */
+        footer {
+            height: 80px;
+            padding: 0 4vw;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            background: rgba(5,5,5,0.8);
+            border-top: 1px solid var(--border);
+            z-index: 10;
+        }
+
+        .footer-left a {
+            color: var(--text-primary);
+            text-decoration: none;
+            border-bottom: 1px solid var(--accent);
+            margin-left: 10px;
+            text-transform: lowercase; 
+        }
+
+        .status-dot {
+            height: 8px;
+            width: 8px;
+            background-color: #00ff00;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 8px;
+            box-shadow: 0 0 8px #00ff00;
+        }
+
+        /* --- RESPONSIVE & MOBILE ANIMATION --- */
+        @media (max-width: 1024px) {
+            .project-slide { min-width: 45vw; }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                overflow-y: auto; 
+                height: auto;
+                min-height: 100vh;
+            }
+            
+            header {
+                position: relative;
+            }
+
+            main { 
+                padding: 2rem 6vw; 
+                gap: 1.5rem; 
+                overflow-x: auto;
+                scroll-behavior: smooth;
+            }
+            
+            .project-slide { 
+                min-width: 85vw; 
+                height: 55vh;
+            }
+
+            .slide-tech { padding: 1rem; }
+            .mobile-frame { transform: scale(0.8); }
+            .project-slide:hover .mobile-frame { transform: scale(0.85); }
+            
+            footer { 
+                position: relative; 
+                flex-direction: column; 
+                justify-content: center; 
+                gap: 10px; 
+                height: auto; 
+                padding: 30px 20px;
+                background: #000;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="fireworks-canvas"></canvas>
+
+    <header>
+        <h1>halem</h1>
+        
+        <div class="header-meta">
+            <div class="role-title">Event. Tech</div>
+            <div class="stack-tag">/// SYSTEM ARCHITECT</div>
+        </div>
+    </header>
+
+    <main id="carousel-track">
+        
+        <article class="project-slide">
+            <div class="slide-tech">
+                <div class="mobile-frame">
+                    <iframe src="https://brunei.halem.my" loading="lazy" title="Brunei Event Booking"></iframe>
+                </div>
+                <div class="mini-code">
+                    // Auto Booth API <br>
+                    const booth = await lockBooth(id);<br>
+                    if (booth.locked) return false;
+                </div>
+            </div>
+            <div class="slide-info">
+                <div>
+                    <div class="info-header">
+                        <h2>Brunei<br>Edition</h2>
+                        <span class="p-role">Live System</span>
+                    </div>
+                    <p class="p-desc">
+                        Booth selection interface with real-time floorplan API. Optimized for high-traffic launch events and vendor management.
+                    </p>
+                </div>
+                <a href="https://brunei.halem.my" target="_blank" class="p-link">
+                    Launch System <i data-lucide="arrow-up-right" size="14"></i>
+                </a>
+            </div>
+        </article>
+
+        <article class="project-slide">
+            <div class="slide-tech">
+                <div class="mobile-frame">
+                    <iframe src="https://singapore.halem.my" loading="lazy" title="Singapore Exhibition System"></iframe>
+                </div>
+                <div class="mini-code">
+                    // Auto Booth API <br>
+                    const booth = await lockBooth(id);<br>
+                    if (booth.locked) return false;
+                </div>
+            </div>
+            <div class="slide-info">
+                <div>
+                    <div class="info-header">
+                        <h2>Singapore<br>Edition</h2>
+                        <span class="p-role">Live System</span>
+                    </div>
+                    <p class="p-desc">
+                        Booth selection interface with real-time floorplan API. Optimized for high-traffic launch events and vendor management.
+                    </p>
+                </div>
+                <a href="https://singapore.halem.my" target="_blank" class="p-link">
+                    Launch System <i data-lucide="arrow-up-right" size="14"></i>
+                </a>
+            </div>
+        </article>
+
+        <article class="project-slide">
+            <div class="slide-tech">
+                <div class="mobile-frame">
+                    <iframe src="https://absolutevent.my/png26" loading="lazy" title="Penang Expo Booking"></iframe>
+                </div>
+                <div class="mini-code">
+                    // Auto Booth API <br>
+                    const booth = await lockBooth(id);<br>
+                    if (booth.locked) return false;
+                </div>
+            </div>
+            <div class="slide-info">
+                <div>
+                    <div class="info-header">
+                        <h2>Penang<br>2026</h2>
+                        <span class="p-role">In Development</span>
+                    </div>
+                    <p class="p-desc">
+                        Booth selection interface with real-time floorplan API. Optimized for high-traffic launch events and vendor management.
+                    </p>
+                </div>
+                <a href="https://absolutevent.my/png26" target="_blank" class="p-link">
+                    View Preview <i data-lucide="arrow-up-right" size="14"></i>
+                </a>
+            </div>
+        </article>
+
+    </main>
+
+    <footer>
+        <div class="footer-left">
+            Based in Malaysia
+            <a href="mailto:info@halem.my">info@halem.my</a>
+        </div>
+        <div>
+            <span class="status-dot"></span>
+            Accepting Commissions
+        </div>
+    </footer>
+
+    <script>
+        lucide.createIcons();
+
+        // Fireworks Logic
+        const canvas = document.getElementById('fireworks-canvas');
+        const ctx = canvas.getContext('2d');
+        let fireworks = [], particles = [];
+        
+        const resize = () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+        window.addEventListener('resize', resize);
+        resize();
+
+        function random(min, max) { return Math.random() * (max - min) + min; }
+
+        class Firework {
+            constructor() {
+                this.x = random(0, canvas.width);
+                this.y = canvas.height;
+                this.tx = random(0, canvas.width);
+                this.ty = random(0, canvas.height/2);
+                this.speed = 5; 
+                this.angle = Math.atan2(this.ty - this.y, this.tx - this.x);
+                this.exploded = false;
+                this.color = `hsl(0, 0%, ${random(80,100)}%)`; 
+            }
+            update() {
+                const vx = Math.cos(this.angle) * this.speed;
+                const vy = Math.sin(this.angle) * this.speed;
+                this.x += vx; this.y += vy;
+                if (this.y < this.ty) { this.exploded = true; createParticles(this.x, this.y); }
+            }
+            draw() {
+                ctx.beginPath(); ctx.arc(this.x, this.y, 2, 0, Math.PI*2); 
+                ctx.fillStyle = this.color; ctx.fill();
+            }
+        }
+
+        class Particle {
+            constructor(x, y) {
+                this.x = x; this.y = y;
+                this.angle = random(0, Math.PI*2);
+                this.speed = random(1, 5);
+                this.alpha = 1;
+                this.decay = random(0.015, 0.03);
+            }
+            update() {
+                this.x += Math.cos(this.angle) * this.speed;
+                this.y += Math.sin(this.angle) * this.speed;
+                this.alpha -= this.decay;
+            }
+            draw() {
+                ctx.save(); ctx.globalAlpha = this.alpha;
+                ctx.beginPath(); ctx.arc(this.x, this.y, 1.5, 0, Math.PI*2);
+                ctx.fillStyle = 'white'; ctx.fill();
+                ctx.restore();
+            }
+        }
+
+        function createParticles(x, y) {
+            for(let i=0; i<30; i++) particles.push(new Particle(x, y));
+        }
+
+        function loop() {
+            requestAnimationFrame(loop);
+            
+            ctx.globalCompositeOperation = 'destination-out';
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            ctx.globalCompositeOperation = 'lighter'; 
+
+            if(Math.random() < 0.03) fireworks.push(new Firework());
+
+            fireworks = fireworks.filter(f => !f.exploded);
+            fireworks.forEach(f => { f.update(); f.draw(); });
+
+            particles = particles.filter(p => p.alpha > 0);
+            particles.forEach(p => { p.update(); p.draw(); });
+        }
+        loop();
+
+        // Mobile Auto-Scroll Logic
+        const track = document.getElementById('carousel-track');
+        let isMobile = window.innerWidth <= 768;
+        
+        if (isMobile) {
+            setTimeout(() => {
+                const cardWidth = track.querySelector('.project-slide').offsetWidth;
+                const gap = 32; 
+                
+                track.scrollTo({ left: cardWidth + gap, behavior: 'smooth' });
+                
+                setTimeout(() => {
+                    track.scrollTo({ left: (cardWidth + gap) * 2, behavior: 'smooth' });
+                    
+                    setTimeout(() => {
+                        track.scrollTo({ left: 0, behavior: 'smooth' });
+                    }, 3000);
+                }, 3000);
+            }, 2000);
+        }
+    </script>
+</body>
+</html>
